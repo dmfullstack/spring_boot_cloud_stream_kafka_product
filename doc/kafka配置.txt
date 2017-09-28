@@ -1,0 +1,52 @@
+通用配置：
+	前缀：spring:
+             cloud:
+               stream:
+                kafka:
+                  binder:
+	brokers：kafka绑定器连接的消息中间件列表，需要配置多个时用逗号分隔，每个地址可以是单独的host，也可以是host:port的形式，默认localhost
+	defaultBrokerPort：默认的消息中间件端口号，当brokers中的配置地址没有包含端口信息时，将使用该参数配置的默认端口进行连接，默认9092
+	zkNodes：zookeeper节点列表，需要配置多个时用逗号分隔，每个地址可以是单独的host，也可以是host:port的形式，默认localhost
+	defaultZkPort：默认的zookeeper端口号，当zkNodes中的配置地址没有包含端口号时，将使用该参数配置的默认端口号进行连接，默认2181
+	headers：配置会被传输的自定义头信息
+	offsetUpdateTimeWindow：配置offset更新频率，以毫秒为单位，如果位置为0则忽略，默认10000
+	offsetUpdateCount：设置offset以次数表示的更新频率，如果为0则忽略，该参数与offsetUpdateTimeWindow互斥，默认0
+	requiredAcks：设置确认消息的数量，默认1
+	minPartitionCount：该参数仅在设置了autoCreateTopics和autoAddPartitions时生效，用来设置该绑定器所使用主题的全局分区最小数量，如果当生产者的
+	partitionCount参数或InstanceCount*concurrency设置大于该参数，该参数值将被覆盖。默认1
+	replicationFactor：当autoCreateTopics参数为true时，用来配置自动创建主题的副本数量，默认1
+	autoCreateTopics：默认为true，绑定器会自动创建新主题，如果设置为false，那么绑定器将使用已经配置的主题，但是在这种情况下，如果需要使用的主题不存在，
+	绑定器会启动失败。
+	autoAddPartitions：默认为false，绑定器会根据已经配置的主题分区来实现，如果目标主题的分区数小于预期值，那么绑定器会启动失败，如果该参数设置为true，
+	绑定器将在需要的时候自动创建新的分区。
+	socketBufferSize：设置kafka的socket缓存大小，默认2097152
+
+消费者配置：
+	前缀：spring:
+             cloud:
+               stream:
+                kafka:
+                  bindings:
+                    <channelName>:
+                      consumer
+    autoCommitOffset：是否在处理消息时自动提交offset，如果设置为false，在消息头中会加入ack头信息以实现延迟确认，默认true
+    aotuCommitOnError：只有在autoCommitOffset设置为true时生效，当设置为false时，引起错误的消息不会自动提交offset，仅提交成功消息的offset，如果设
+	置为true，不论消息是否成功，都会自动提交，当不设置该值时，他实际上具有与enableDlq相同的配置值。
+	recoveryInterval：尝试恢复连接的时间间隔，毫秒单位，默认5000
+	resetOffsets：是否使用提供的startOffset值来重置消费者的offset值，默认false
+	startOffset：用来设置新建组的起始offset，该值也会在resetOffsets开始时被使用
+	enableDlq：设置为true时，将为消费者启用DLQ行为，引起错误的消息将被发送到名为error.<destination>.<group>的主题中去，默认false
+
+生产者配置：
+	前缀：spring:
+             cloud:
+               stream:
+                kafka:
+                  bindings:
+                    <channelName>:
+                      producer
+    bufferSize：kafka批量发送前的缓存数据上限，以字节为单位，默认16384
+    sync：配置kafka消息生产者的发送默认，默认为false，即采用async配置，允许批量发送数据，当设置为true时，将采用sync配置，消息将不会被批量发送，而是
+	一条一条的发送，默认false
+	batchTimeout：消息生产者批量发送时，为了积累更多发送数据而设置的等待时间，通常情况下，生产者基本不会等待，而是直接发送所有在前一批次发送时累积的消息
+	数据。当我们设置一个非0值时，可以以延迟为代价来增加系统的吞吐量，默认值0

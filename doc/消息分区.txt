@@ -1,3 +1,21 @@
 消费组无法控制消息具体被哪个实例消费，也就是说，对于同一条消息，他多次到达之后可能是由不同的实例进行消费的。但是对于一些业务，需要对一些具有相同特征的消息
 设置每次都被同一个消费实例处理。这时消费生产者可以为消息增加一个固有的特征id来进行分区，使得拥有这些id的消息每次都能被发送到一个特定的实例上。
 分区概念就是为了解决这样的问题：当生产者将消息数据发送给多个消费者实例时，保证拥有共同特征的消息数据始终是由同一个消费者实例接收和处理。
+
+配置：P370
+	在消费者应用中，修改配置文件：
+	spring.cloud.stream.bindings.input.group=service-A
+	spring.cloud.stream.bindings.input.destination=greetings
+	#开启消费者分区功能
+	spring.cloud.stream.bindings.input.consumer.partitioned=true
+	#当前消费者的总实例数
+	spring.cloud.stream.instanceCount=2
+	#当前实例索引号，从0开始，最大值为参数-1，实验时需要启动多个实例，可以通过运行参数来为不同实例设置不同的索引值
+	spring.cloud.stream.instanceIndex=0
+
+	在生产者应用中，修改配置文件：
+	spring.cloud.stream.bindings.output.destination=greetings
+	#指定分区键的表达式规则，可以根据实际的输出消息规则配置SpEL来生成合适的分区键
+	spring.cloud.stream.bindings.output.producer.partitionKeyExpression=payload
+	#指定了消息分区的数量
+	spring.cloud.stream.bindings.output.producer.partitionCount=2
