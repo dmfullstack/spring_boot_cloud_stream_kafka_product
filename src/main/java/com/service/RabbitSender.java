@@ -1,8 +1,10 @@
 package com.service;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cloud.stream.annotation.StreamListener;
 import org.springframework.integration.support.MessageBuilder;
 import org.springframework.stereotype.Component;
+
 import com.Barista;
 import com.domain.Product;
 
@@ -27,5 +29,10 @@ public class RabbitSender {
         }
         return null;
     }
+
+    @StreamListener(Barista.INPUT_CHANNEL)
+	public void netshoesProducts(Product product) {
+    	System.out.println("接受反馈对象2:" + product);
+	}
 
 }

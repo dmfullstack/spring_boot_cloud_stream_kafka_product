@@ -27,4 +27,10 @@ public class MainController {
 		rabbitSender2.sendMessage();
 	}
 
+	//http://localhost:8089/poll
+	@GetMapping("/poll")
+	public void poll() {
+		rabbitSender2.timerMessageSource();
+	}
+
 }
