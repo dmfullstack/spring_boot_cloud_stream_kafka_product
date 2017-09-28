@@ -7,6 +7,7 @@ import org.springframework.cloud.stream.annotation.EnableBinding;
 
 @SpringBootApplication
 @EnableEurekaClient
+//该注解用来指定一个或多个定义了@Input或@Output注解的接口，以此实现对消息通道德绑定
 @EnableBinding(Barista.class)
 //@EnableBinding({Barista.class})//可以传多个类，处理多个通道(主题)
 public class KafkaPocProductApplication {

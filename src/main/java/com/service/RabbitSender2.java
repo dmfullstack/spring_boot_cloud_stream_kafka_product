@@ -13,10 +13,8 @@ import com.domain.Product;
 @Component
 public class RabbitSender2 {
 
-	//如果通道名称是在声明的注解上指定的，则不能使用方法名称，而要使用通道名称。举例如下：
-	//@Output("customOutput")
-	//MessageChannel output();
-	@Qualifier(Barista.INPUT_CHANNEL)
+	//可以通过@Autowired注入绑定接口，但有时候我们会创建多个不同名的MessageChannel实例，这时需要使用@Qualifier注解来特别指定具体实例的名称。
+	@Qualifier(Barista.OUTPUT_CHANNEL)
 	@Autowired
 	private MessageChannel output;
 
